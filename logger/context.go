@@ -6,16 +6,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type contextKey string
-
-const requestIDKey contextKey = "requestId"
-
-func InjectRequestID(ctx context.Context, requestID string) context.Context {
-	return context.WithValue(ctx, requestIDKey, requestID)
-}
-
 func GetRequestID(ctx context.Context) string {
-	v := ctx.Value(requestIDKey)
+	v := ctx.Value("requestId")
 	if v == nil {
 		return "unknown"
 	}
