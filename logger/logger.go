@@ -8,6 +8,16 @@ import (
 
 var Log = logrus.New()
 
+var registeredMessageFormater MessageFormater = &DefaultMessageFormater{}
+
+func RegisterMessageFormater(m MessageFormater) {
+	registeredMessageFormater = m
+}
+
+func GetMessageFormater() MessageFormater {
+	return registeredMessageFormater
+}
+
 func Init() error {
 	dir, _ := os.Getwd()
 	cfg, err := LoadLogConfig(filepath.Join(dir, "/log-config.xml"))
@@ -29,6 +39,7 @@ func Init() error {
 	Log.SetFormatter(&DynamicFormatter{
 		Pattern:         cfg.Pattern,
 		TimestampFormat: cfg.TimestampFormat,
+		MsgFormatter:    GetMessageFormater(),
 	})
 
 	return nil

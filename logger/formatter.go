@@ -10,6 +10,18 @@ import (
 type DynamicFormatter struct {
 	Pattern         string
 	TimestampFormat string
+	MsgFormatter    MessageFormater
+}
+
+type MessageFormater interface {
+	Format(message string) string
+}
+
+type DefaultMessageFormater struct {
+}
+
+func (d *DefaultMessageFormater) Format(message string) string {
+	return message
 }
 
 func (f *DynamicFormatter) Format(entry *logrus.Entry) ([]byte, error) {
@@ -19,7 +31,8 @@ func (f *DynamicFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	if logger == nil {
 		logger = "main"
 	}
-	message := entry.Message
+
+	message := f.MsgFormatter.Format(entry.Message)
 
 	file := "???"
 	line := 0
