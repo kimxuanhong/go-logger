@@ -9,13 +9,21 @@ import (
 var Log = logrus.New()
 
 var registeredMessageFormater MessageFormater = &DefaultMessageFormater{}
+var registeredDefaultFunctionNameFormatter FunctionNameFormatter = &DefaultFunctionNameFormatter{}
 
 func RegisterMessageFormater(m MessageFormater) {
 	registeredMessageFormater = m
 }
+func RegisterFunctionNameFormatter(m FunctionNameFormatter) {
+	registeredDefaultFunctionNameFormatter = m
+}
 
 func GetMessageFormater() MessageFormater {
 	return registeredMessageFormater
+}
+
+func GetFunctionNameFormatter() FunctionNameFormatter {
+	return registeredDefaultFunctionNameFormatter
 }
 
 func Init() error {
@@ -37,9 +45,10 @@ func Init() error {
 	Log.SetReportCaller(true)
 	Log.SetLevel(level)
 	Log.SetFormatter(&DynamicFormatter{
-		Pattern:         cfg.Pattern,
-		TimestampFormat: cfg.TimestampFormat,
-		MsgFormatter:    GetMessageFormater(),
+		Pattern:               cfg.Pattern,
+		TimestampFormat:       cfg.TimestampFormat,
+		MsgFormatter:          GetMessageFormater(),
+		FunctionNameFormatter: GetFunctionNameFormatter(),
 	})
 
 	return nil

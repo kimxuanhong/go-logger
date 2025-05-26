@@ -7,10 +7,25 @@ import (
 	"strings"
 )
 
+type FunctionNameFormatter interface {
+	Format(fullName string) string
+}
+
+type DefaultFunctionNameFormatter struct{}
+
+func (f *DefaultFunctionNameFormatter) Format(fullName string) string {
+	parts := strings.Split(fullName, ".")
+	if len(parts) > 0 {
+		return parts[len(parts)-1] // chỉ lấy tên hàm, ví dụ "GetUser"
+	}
+	return fullName
+}
+
 type DynamicFormatter struct {
-	Pattern         string
-	TimestampFormat string
-	MsgFormatter    MessageFormater
+	Pattern               string
+	TimestampFormat       string
+	MsgFormatter          MessageFormater
+	FunctionNameFormatter FunctionNameFormatter
 }
 
 type MessageFormater interface {
@@ -40,7 +55,7 @@ func (f *DynamicFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	if entry.Caller != nil {
 		file = path.Base(entry.Caller.File)
 		line = entry.Caller.Line
-		function = entry.Caller.Function
+		function = f.FunctionNameFormatter.Format(entry.Caller.Function)
 	}
 
 	requestID := "unknown"
