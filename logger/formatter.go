@@ -30,6 +30,11 @@ func (f *DynamicFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		function = entry.Caller.Function
 	}
 
+	requestID := "unknown"
+	if rid, ok := entry.Data["requestId"]; ok {
+		requestID = fmt.Sprint(rid)
+	}
+
 	out := f.Pattern
 	out = strings.ReplaceAll(out, "%timestamp%", timestamp)
 	out = strings.ReplaceAll(out, "%level%", level)
@@ -37,6 +42,7 @@ func (f *DynamicFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	out = strings.ReplaceAll(out, "%file%", file)
 	out = strings.ReplaceAll(out, "%line%", fmt.Sprintf("%d", line))
 	out = strings.ReplaceAll(out, "%function%", function)
+	out = strings.ReplaceAll(out, "%requestId%", requestID)
 	out = strings.ReplaceAll(out, "%message%", message)
 
 	return []byte(out + "\n"), nil
