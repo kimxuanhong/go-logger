@@ -17,7 +17,7 @@ type DefaultFunctionNameFormatter struct{}
 func (f *DefaultFunctionNameFormatter) Format(fullName string) string {
 	parts := strings.Split(fullName, ".")
 	if len(parts) > 0 {
-		return parts[len(parts)-1] // chỉ lấy tên hàm, ví dụ "GetUser"
+		return parts[len(parts)-1]
 	}
 	return fullName
 }
@@ -29,15 +29,15 @@ type MessageFormater interface {
 type DefaultMessageFormater struct {
 }
 
+func (d *DefaultMessageFormater) Format(message string) string {
+	return message
+}
+
 type DynamicFormatter struct {
 	Pattern               string
 	TimestampFormat       string
 	MsgFormatter          MessageFormater
 	FunctionNameFormatter FunctionNameFormatter
-}
-
-func (d *DefaultMessageFormater) Format(message string) string {
-	return message
 }
 
 func (f *DynamicFormatter) Format(entry *logrus.Entry) ([]byte, error) {
