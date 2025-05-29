@@ -9,7 +9,7 @@ import (
 func GetRequestID(ctx context.Context) string {
 	v := ctx.Value("requestId")
 	if v == nil {
-		return "unknown"
+		return "null"
 	}
 	return fmt.Sprint(v)
 }
