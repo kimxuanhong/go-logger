@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	logger.RegisterSensitiveMessageFormater()
 	err := logger.Init()
 	if err != nil {
 		panic(err)
@@ -17,6 +18,7 @@ func main() {
 	log := logger.WithContext(ctx)
 	log.Info("Ứng dụng đã khởi động")
 	logger.Log.WithField("logger", "main").Info("Ứng dụng đã khởi động")
+	logger.Log.WithField("logger", "main").Info("+84225898023")
 
 	someFunc()
 }
